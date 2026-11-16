@@ -1,0 +1,13 @@
+# Data processing
+numpy
+pandas
+
+# Application interface
+streamlit
+
+# Visualization
+matplotlib
+plotly
+
+# Testing
+pytest

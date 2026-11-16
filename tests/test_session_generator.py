@@ -1,0 +1,1 @@
+# 	Tests session generation from courses.

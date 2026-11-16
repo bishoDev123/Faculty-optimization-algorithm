@@ -1,0 +1,1 @@
+# Tests GA execution and output.

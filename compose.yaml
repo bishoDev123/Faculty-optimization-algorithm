@@ -1,0 +1,13 @@
+services:
+  timetable-app:
+    build: .
+    container_name: faculty-timetable-app
+
+    ports:
+      - "8501:8501"
+
+    volumes:
+      # Sync local code changes with the container
+      - .:/app
+
+    restart: unless-stopped

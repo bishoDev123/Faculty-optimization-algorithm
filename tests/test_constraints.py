@@ -1,0 +1,1 @@
+#Tests hard-constraint detection.

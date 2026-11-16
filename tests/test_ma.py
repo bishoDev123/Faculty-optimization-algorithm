@@ -1,0 +1,1 @@
+# 	Tests MA execution and output.
