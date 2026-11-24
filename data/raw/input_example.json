@@ -1,8 +1,82 @@
+
 {
-    "days": 5,
+    "days": [
+        "Sunday",
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday"
+    ],
     "slots_per_day": 6,
-    "lecturers": [],
-    "groups": [],
-    "rooms": [],
-    "courses": []
+
+    "lecturers": [
+        {"id": "L1", "name": "Ahmed Hassan"},
+        {"id": "L2", "name": "Mohamed Ali"},
+        {"id": "L3", "name": "Sara Mahmoud"},
+        {"id": "L4", "name": "Mona Ibrahim"}
+    ],
+
+    "groups": [
+        {"id": "G1", "name": "CS-Year-1", "size": 45},
+        {"id": "G2", "name": "CS-Year-2", "size": 35},
+        {"id": "G3", "name": "CS-Year-3", "size": 25}
+    ],
+
+    "rooms": [
+        {"id": "R1", "name": "Lecture Hall 1", "capacity": 60},
+        {"id": "R2", "name": "Lecture Hall 2", "capacity": 40},
+        {"id": "R3", "name": "Computer Lab 1", "capacity": 30},
+        {"id": "R4", "name": "Computer Lab 2", "capacity": 25}
+    ],
+
+    "courses": [
+        {
+            "id": "C1",
+            "name": "Mathematics",
+            "lecturer_id": "L1",
+            "group_id": "G1",
+            "weekly_hours": 3,
+            "duration": 1
+        },
+        {
+            "id": "C2",
+            "name": "Programming",
+            "lecturer_id": "L2",
+            "group_id": "G1",
+            "weekly_hours": 4,
+            "duration": 2
+        },
+        {
+            "id": "C3",
+            "name": "Database Systems",
+            "lecturer_id": "L1",
+            "group_id": "G2",
+            "weekly_hours": 2,
+            "duration": 1
+        },
+        {
+            "id": "C4",
+            "name": "Data Structures",
+            "lecturer_id": "L3",
+            "group_id": "G2",
+            "weekly_hours": 4,
+            "duration": 2
+        },
+        {
+            "id": "C5",
+            "name": "Artificial Intelligence",
+            "lecturer_id": "L2",
+            "group_id": "G3",
+            "weekly_hours": 2,
+            "duration": 1
+        },
+        {
+            "id": "C6",
+            "name": "Operating Systems",
+            "lecturer_id": "L4",
+            "group_id": "G3",
+            "weekly_hours": 3,
+            "duration": 1
+        }
+    ]
 }
