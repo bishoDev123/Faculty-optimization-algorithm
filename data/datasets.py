@@ -1,3 +1,5 @@
+# Load and validate a scheduling problem from a JSON file.
+
 import json
 
 from pathlib import Path
@@ -15,17 +17,16 @@ from core.problem import validate_problem_data
 
 
 def load_problem(path: str) -> Problem:
-    """
-    Load and validate a scheduling problem from a JSON file.
-    """
 
     file_path = Path(path)
 
+    # checks to see if the file was there
     if not file_path.is_file():
         raise FileNotFoundError(
             f"Dataset file not found: {file_path}"
         )
 
+    # reads the file and sees if the JSON is valid
     try:
         with file_path.open("r", encoding="utf-8") as file:
             data = json.load(file)
@@ -35,9 +36,11 @@ def load_problem(path: str) -> Problem:
             f"Invalid JSON in {file_path}: {error}"
         ) from error
 
+    # checks if the data is decoded from JSON to a dictionary
     if not isinstance(data, dict):
         raise ValueError("Dataset root must be a JSON object")
 
+    # checks for any missing components in the file
     required_keys = {
         "lecturers",
         "groups",
@@ -54,6 +57,7 @@ def load_problem(path: str) -> Problem:
             f"Missing required dataset keys: {sorted(missing_keys)}"
         )
 
+    # creates objects from core.models using the file data
     try:
         lecturers = [
             Lecturer(**item)
@@ -95,12 +99,14 @@ def load_problem(path: str) -> Problem:
             slots_per_day=data["slots_per_day"]
         )
 
+    # checks if any of the values of the file don't match the models
     except (TypeError, KeyError) as error:
         raise ValueError(
             f"Invalid dataset structure: {error}"
         ) from error
 
     result = validate_problem_data(problem)
+
 
     if not result.is_valid:
         errors = "\n".join(

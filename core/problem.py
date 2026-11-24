@@ -1,29 +1,23 @@
+# Validate the input data required for timetable optimization.
+
+#     Checks:
+#         - Unique entity IDs
+#         - Valid lecturer and group references
+#         - Valid room and group capacities
+#         - Valid course requirements
+#         - Valid timetable configuration
+#         - Generated session consistency
+
+#     Returns:
+#         ValidationResult containing all detected violations.
 
 from core.models import Problem
 from core.result import ValidationResult, ConstraintViolation
 
 
 def validate_problem_data(problem: Problem) -> ValidationResult:
-    """
-    Validate the input data required for timetable optimization.
-
-    Checks:
-        - Unique entity IDs
-        - Valid lecturer and group references
-        - Valid room and group capacities
-        - Valid course requirements
-        - Valid timetable configuration
-        - Generated session consistency
-
-    Returns:
-        ValidationResult containing all detected violations.
-    """
 
     violations = []
-
-    # --------------------------------------------------
-    # 1. Validate unique IDs
-    # --------------------------------------------------
 
     entities = {
         "lecturer": problem.lecturers,
@@ -33,6 +27,7 @@ def validate_problem_data(problem: Problem) -> ValidationResult:
         "session": problem.sessions
     }
 
+    # Validate unique IDs using sets
     for entity_type, items in entities.items():
         seen_ids = set()
 
@@ -50,10 +45,8 @@ def validate_problem_data(problem: Problem) -> ValidationResult:
             else:
                 seen_ids.add(item.id)
 
-    # --------------------------------------------------
-    # 2. Validate lecturer references
-    # --------------------------------------------------
 
+    # Validate lecturer references
     lecturer_ids = {lecturer.id for lecturer in problem.lecturers}
 
     for course in problem.courses:
@@ -69,10 +62,7 @@ def validate_problem_data(problem: Problem) -> ValidationResult:
                 )
             )
 
-    # --------------------------------------------------
-    # 3. Validate student group references
-    # --------------------------------------------------
-
+    # Validate student group references
     group_ids = {group.id for group in problem.groups}
 
     for course in problem.courses:
@@ -88,10 +78,7 @@ def validate_problem_data(problem: Problem) -> ValidationResult:
                 )
             )
 
-    # --------------------------------------------------
     # 4. Validate room capacities
-    # --------------------------------------------------
-
     for room in problem.rooms:
         if room.capacity <= 0:
             violations.append(
@@ -105,10 +92,7 @@ def validate_problem_data(problem: Problem) -> ValidationResult:
                 )
             )
 
-    # --------------------------------------------------
-    # 5. Validate student group sizes
-    # --------------------------------------------------
-
+    # 5. Validate student group sizes not negative
     for group in problem.groups:
         if group.size <= 0:
             violations.append(
@@ -121,10 +105,7 @@ def validate_problem_data(problem: Problem) -> ValidationResult:
                 )
             )
 
-    # --------------------------------------------------
-    # 6. Validate course requirements
-    # --------------------------------------------------
-
+    # Validate course requirements not negative and compaitable
     for course in problem.courses:
 
         if course.weekly_hours <= 0:
@@ -167,10 +148,9 @@ def validate_problem_data(problem: Problem) -> ValidationResult:
                 )
             )
 
-    # --------------------------------------------------
-    # 7. Validate timetable configuration
-    # --------------------------------------------------
-
+    # Validate timetable configuration
+    
+    # no days
     if not problem.days:
         violations.append(
             ConstraintViolation(
@@ -180,6 +160,7 @@ def validate_problem_data(problem: Problem) -> ValidationResult:
             )
         )
 
+    # duplicate days
     if len(problem.days) != len(set(problem.days)):
         violations.append(
             ConstraintViolation(
@@ -189,6 +170,7 @@ def validate_problem_data(problem: Problem) -> ValidationResult:
             )
         )
 
+    # negative slots per day
     if problem.slots_per_day <= 0:
         violations.append(
             ConstraintViolation(
@@ -201,10 +183,7 @@ def validate_problem_data(problem: Problem) -> ValidationResult:
             )
         )
 
-    # --------------------------------------------------
-    # 8. Validate generated sessions
-    # --------------------------------------------------
-
+    # Validate generated sessions
     course_map = {
         course.id: course
         for course in problem.courses
@@ -219,6 +198,7 @@ def validate_problem_data(problem: Problem) -> ValidationResult:
 
         course = course_map.get(session.course_id)
 
+        # Checks if the course is in the map
         if course is None:
             violations.append(
                 ConstraintViolation(
@@ -234,6 +214,7 @@ def validate_problem_data(problem: Problem) -> ValidationResult:
 
         session_ids_by_course[course.id].append(session.id)
 
+        # Checks if the mapped lecturer isn't the same as in the session
         if session.lecturer_id != course.lecturer_id:
             violations.append(
                 ConstraintViolation(
@@ -245,7 +226,8 @@ def validate_problem_data(problem: Problem) -> ValidationResult:
                     severity="hard"
                 )
             )
-
+            
+        # Checks if the mapped student group isn't the same as in the session
         if session.group_id != course.group_id:
             violations.append(
                 ConstraintViolation(
@@ -258,6 +240,7 @@ def validate_problem_data(problem: Problem) -> ValidationResult:
                 )
             )
 
+        # Checks if the mapped course duration isn't the same as in the session
         if session.duration != course.duration:
             violations.append(
                 ConstraintViolation(
@@ -269,6 +252,7 @@ def validate_problem_data(problem: Problem) -> ValidationResult:
                 )
             )
 
+        # checks if the session has a negative duration
         if session.duration <= 0:
             violations.append(
                 ConstraintViolation(
@@ -281,10 +265,7 @@ def validate_problem_data(problem: Problem) -> ValidationResult:
                 )
             )
 
-    # --------------------------------------------------
-    # 9. Check expected session counts
-    # --------------------------------------------------
-
+    # Check expected session counts
     for course in problem.courses:
 
         if course.duration <= 0 or course.weekly_hours <= 0:
@@ -312,10 +293,7 @@ def validate_problem_data(problem: Problem) -> ValidationResult:
                 )
             )
 
-    # --------------------------------------------------
-    # 10. Build validation result
-    # --------------------------------------------------
-
+    # Build validation result
     return ValidationResult(
         is_valid=len(violations) == 0,
         hard_violations=violations,
