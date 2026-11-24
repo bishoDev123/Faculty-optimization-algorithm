@@ -1,7 +1,5 @@
 # Defines courses, lecturers, rooms, groups, time slots and sessions
 from dataclasses import dataclass
-from dataclasses import dataclass
-
 
 @dataclass
 class Lecturer:
