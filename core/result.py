@@ -9,6 +9,13 @@ class ConstraintViolation:
     severity: str
     
 @dataclass
+class ValidationResult:
+    is_valid: bool
+    hard_violations: list[ConstraintViolation]
+    missing_session_ids: list[str]
+    duplicate_session_ids: list[str]
+    
+@dataclass
 class OptimizationResult:
     algorithm: str
     best_timetable: Timetable
@@ -19,9 +26,3 @@ class OptimizationResult:
     generations: int
     validation: ValidationResult
     metadata: dict
-@dataclass
-class ValidationResult:
-    is_valid: bool
-    hard_violations: list[ConstraintViolation]
-    missing_session_ids: list[str]
-    duplicate_session_ids: list[str]
