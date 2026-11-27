@@ -3,6 +3,12 @@ from dataclasses import dataclass
 from core.models import Timetable
 
 @dataclass
+class ConstraintViolation:
+    code: str
+    message: str
+    severity: str
+    
+@dataclass
 class OptimizationResult:
     algorithm: str
     best_timetable: Timetable
@@ -19,9 +25,3 @@ class ValidationResult:
     hard_violations: list[ConstraintViolation]
     missing_session_ids: list[str]
     duplicate_session_ids: list[str]
-
-@dataclass
-class ConstraintViolation:
-    code: str
-    message: str
-    severity: str

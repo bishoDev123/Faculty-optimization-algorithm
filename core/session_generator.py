@@ -28,5 +28,5 @@ def generate_sessions(courses: list[Course]) -> list[LectureSession]:
             )
             
             sessions.append(session)
-        return session
+    return sessions
             
